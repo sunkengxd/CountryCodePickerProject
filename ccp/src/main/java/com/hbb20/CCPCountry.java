@@ -91,7 +91,7 @@ public class CCPCountry implements Comparable<CCPCountry> {
      * @return List of all the countries available in xml file.
      */
     static void loadDataFromXML(Context context, CountryCodePicker.Language language) {
-        List<CCPCountry> countries = new ArrayList<CCPCountry>();
+        List<CCPCountry> countries = new ArrayList<>();
         String tempDialogTitle = "", tempSearchHint = "", tempNoResultAck = "";
         try {
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
@@ -142,8 +142,8 @@ public class CCPCountry implements Comparable<CCPCountry> {
             countries = getLibraryMasterCountriesEnglish();
         }
 
-        dialogTitle = tempDialogTitle.length() > 0 ? tempDialogTitle : "Select a country";
-        searchHintMessage = tempSearchHint.length() > 0 ? tempSearchHint : "Search...";
+        dialogTitle = tempDialogTitle.length() > 0 ? tempDialogTitle : "Please Select a Country";
+        searchHintMessage = tempSearchHint.length() > 0 ? tempSearchHint : "Search";
         noResultFoundAckMessage = tempNoResultAck.length() > 0 ? tempNoResultAck : "Results not found";
         loadedLibraryMaterList = countries;
 
