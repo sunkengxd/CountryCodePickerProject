@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,13 +49,9 @@ class CountryCodeDialog {
             cursorDrawableResourceField = TextView.class.getDeclaredField("mCursorDrawableRes");
             cursorDrawableResourceField.setAccessible(true);
             final Class<?> drawableFieldClass;
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                drawableFieldClass = TextView.class;
-            } else {
-                editorField = TextView.class.getDeclaredField("mEditor");
-                editorField.setAccessible(true);
-                drawableFieldClass = editorField.getType();
-            }
+            editorField = TextView.class.getDeclaredField("mEditor");
+            editorField.setAccessible(true);
+            drawableFieldClass = editorField.getType();
             cursorDrawableField = drawableFieldClass.getDeclaredField("mCursorDrawable");
             cursorDrawableField.setAccessible(true);
         } catch (Exception e) {
@@ -183,6 +180,15 @@ class CountryCodeDialog {
             params.height = RecyclerView.LayoutParams.WRAP_CONTENT;
             recyclerView_countryDialog.setLayoutParams(params);
         }
+
+
+        DividerItemDecoration d = new DividerItemDecoration(
+                recyclerView_countryDialog.getContext(),
+                DividerItemDecoration.VERTICAL
+        );
+
+        d.setDrawable(getDrawable(context, R.drawable.recycler_view_separator));
+        recyclerView_countryDialog.addItemDecoration(d);
 
         final CountryCodeAdapter cca = new CountryCodeAdapter(context, masterCountries, codePicker, rlQueryHolder, editText_search, textView_noResult, dialog, imgClearQuery);
         recyclerView_countryDialog.setLayoutManager(new LinearLayoutManager(context));
