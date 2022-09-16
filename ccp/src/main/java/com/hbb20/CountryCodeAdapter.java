@@ -277,7 +277,7 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
                 countryName += ccpCountry.getName();
 
                 if (codePicker.getCcpDialogShowNameCode()) {
-                    countryName += "(" + ccpCountry.getNameCode().toUpperCase(Locale.US) + ")";
+                    countryName += " (" + ccpCountry.getNameCode().toUpperCase(Locale.US) + ")";
                 }
 
                 textView_name.setText(countryName);
