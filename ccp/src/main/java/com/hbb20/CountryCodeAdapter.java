@@ -176,17 +176,14 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
     public void onBindViewHolder(CountryCodeViewHolder countryCodeViewHolder, final int i) {
         countryCodeViewHolder.setCountry(filteredCountries.get(i));
         if (filteredCountries.size() > i && filteredCountries.get(i) != null) {
-            countryCodeViewHolder.getMainView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (filteredCountries != null && filteredCountries.size() > i) {
-                        codePicker.onUserTappedCountry(filteredCountries.get(i));
-                    }
-                    if (view != null && filteredCountries != null && filteredCountries.size() > i && filteredCountries.get(i) != null) {
-                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                        dialog.dismiss();
-                    }
+            countryCodeViewHolder.getMainView().setOnClickListener(view -> {
+                if (filteredCountries != null && filteredCountries.size() > i) {
+                    codePicker.onUserTappedCountry(filteredCountries.get(i));
+                }
+                if (view != null && filteredCountries != null && filteredCountries.size() > i && filteredCountries.get(i) != null) {
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    dialog.dismiss();
                 }
             });
         } else {
@@ -213,7 +210,7 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
     }
 
     class CountryCodeViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout relativeLayout_main,rootRowCountryTile;
+        LinearLayout relativeLayout_main,rootRowCountryTile;
         TextView textView_name, textView_code;
         ImageView imageViewFlag;
         LinearLayout linearFlagHolder;
@@ -221,7 +218,7 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
 
         public CountryCodeViewHolder(View itemView) {
             super(itemView);
-            relativeLayout_main = (RelativeLayout) itemView;
+            relativeLayout_main = (LinearLayout) itemView;
 
             textView_name = (TextView) relativeLayout_main.findViewById(R.id.textView_countryName);
             textView_code = (TextView) relativeLayout_main.findViewById(R.id.textView_code);
@@ -280,11 +277,11 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
                 countryName += ccpCountry.getName();
 
                 if (codePicker.getCcpDialogShowNameCode()) {
-                    countryName += " (" + ccpCountry.getNameCode().toUpperCase(Locale.US) + ")";
+                    countryName += "(" + ccpCountry.getNameCode().toUpperCase(Locale.US) + ")";
                 }
 
                 textView_name.setText(countryName);
-                textView_code.setText("+" + ccpCountry.getPhoneCode());
+                textView_code.setText("(+" + ccpCountry.getPhoneCode() + ")");
 
                 if (!codePicker.getCcpDialogShowFlag() || codePicker.ccpUseEmoji) {
                     linearFlagHolder.setVisibility(View.GONE);
@@ -300,7 +297,7 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
             }
         }
 
-        public RelativeLayout getMainView() {
+        public LinearLayout getMainView() {
             return relativeLayout_main;
         }
     }
