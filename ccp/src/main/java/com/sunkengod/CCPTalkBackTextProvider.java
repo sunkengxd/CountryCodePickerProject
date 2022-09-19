@@ -1,7 +1,7 @@
-package com.hbb20;
+package com.sunkengod;
 
 public interface CCPTalkBackTextProvider {
-    public String getTalkBackTextForCountry(CCPCountry country);
+    String getTalkBackTextForCountry(CCPCountry country);
 }
 
 class InternalTalkBackTextProvider implements CCPTalkBackTextProvider {

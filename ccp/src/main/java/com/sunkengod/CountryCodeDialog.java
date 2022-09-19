@@ -1,9 +1,8 @@
-package com.hbb20;
+package com.sunkengod;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -18,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -38,7 +39,6 @@ class CountryCodeDialog {
             sCursorDrawableField,
             sCursorDrawableResourceField;
     static Dialog dialog;
-    static Context context;
 
     static {
         Field editorField = null;
@@ -68,11 +68,45 @@ class CountryCodeDialog {
         }
     }
 
-    public static void openCountryCodeDialog(final CountryCodePicker codePicker) {
-        openCountryCodeDialog(codePicker, null);
+    Context context;
+
+    private static void hideKeyboard(Context context) {
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            //Find the currently focused view, so we can grab the correct window token from it.
+            View view = activity.getCurrentFocus();
+            //If no view currently has focus, create a new one, just so we can grab a window token from it
+            if (view == null) {
+                view = new View(activity);
+            }
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
-    public static void
+    static void setCursorColor(EditText editText, int color) {
+        if (sCursorDrawableField == null) {
+            return;
+        }
+        try {
+            final Drawable drawable = getDrawable(editText.getContext(),
+                    sCursorDrawableResourceField.getInt(editText));
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            sCursorDrawableField.set(sEditorField.get(editText), new Drawable[]{drawable, drawable});
+        } catch (Exception ignored) {
+
+        }
+    }
+
+    private static Drawable getDrawable(Context context, int id) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return context.getResources().getDrawable(id);
+        } else {
+            return AppCompatResources.getDrawable(context, id);
+        }
+    }
+
+    public void
     openCountryCodeDialog(final CountryCodePicker codePicker, final String countryNameCode) {
         context = codePicker.getContext();
         dialog = new Dialog(context);
@@ -85,14 +119,14 @@ class CountryCodeDialog {
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         //dialog views
-        RecyclerView recyclerView_countryDialog = (RecyclerView) dialog.findViewById(R.id.recycler_countryDialog);
-        final TextView textViewTitle = (TextView) dialog.findViewById(R.id.textView_title);
-        RelativeLayout rlQueryHolder = (RelativeLayout) dialog.findViewById(R.id.rl_query_holder);
-        ImageView imgClearQuery = (ImageView) dialog.findViewById(R.id.img_clear_query);
-        final EditText editText_search = (EditText) dialog.findViewById(R.id.editText_search);
-        TextView textView_noResult = (TextView) dialog.findViewById(R.id.textView_noresult);
-        CardView dialogRoot = (CardView) dialog.findViewById(R.id.cardViewRoot);
-        ImageView imgDismiss = (ImageView) dialog.findViewById(R.id.img_dismiss);
+        RecyclerView recyclerView_countryDialog = dialog.findViewById(R.id.recycler_countryDialog);
+        final TextView textViewTitle = dialog.findViewById(R.id.textView_title);
+        RelativeLayout rlQueryHolder = dialog.findViewById(R.id.rl_query_holder);
+        ImageView imgClearQuery = dialog.findViewById(R.id.img_clear_query);
+        final EditText editText_search = dialog.findViewById(R.id.editText_search);
+        TextView textView_noResult = dialog.findViewById(R.id.textView_noresult);
+        CardView dialogRoot = dialog.findViewById(R.id.cardViewRoot);
+        ImageView imgDismiss = dialog.findViewById(R.id.img_dismiss);
 
         //keyboard
         if (codePicker.isSearchAllowed() && codePicker.isDialogKeyboardAutoPopup()) {
@@ -133,12 +167,7 @@ class CountryCodeDialog {
         //close button visibility
         if (codePicker.isShowCloseIcon()) {
             imgDismiss.setVisibility(View.VISIBLE);
-            imgDismiss.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                }
-            });
+            imgDismiss.setOnClickListener(view -> dialog.dismiss());
         } else {
             imgDismiss.setVisibility(View.GONE);
         }
@@ -163,8 +192,12 @@ class CountryCodeDialog {
         //editText tint
         if (codePicker.getDialogSearchEditTextTintColor() != 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                editText_search.setBackgroundTintList(ColorStateList.valueOf(codePicker.getDialogSearchEditTextTintColor()));
-                setCursorColor(editText_search, codePicker.getDialogSearchEditTextTintColor());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    editText_search.setTextCursorDrawable(codePicker.getDialogSearchEditTextTintColor());
+                } else {
+                    editText_search.setBackgroundTintList(ColorStateList.valueOf(codePicker.getDialogSearchEditTextTintColor()));
+                    setCursorColor(editText_search, codePicker.getDialogSearchEditTextTintColor());
+                }
             }
         }
 
@@ -195,7 +228,7 @@ class CountryCodeDialog {
         recyclerView_countryDialog.setAdapter(cca);
 
         //fast scroller
-        FastScroller fastScroller = (FastScroller) dialog.findViewById(R.id.fastscroll);
+        FastScroller fastScroller = dialog.findViewById(R.id.fastscroll);
         fastScroller.setRecyclerView(recyclerView_countryDialog);
         if (codePicker.isShowFastScroller()) {
             if (codePicker.getFastScrollerBubbleColor() != 0) {
@@ -218,23 +251,17 @@ class CountryCodeDialog {
             fastScroller.setVisibility(View.GONE);
         }
 
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                hideKeyboard(context);
-                if (codePicker.getDialogEventsListener() != null) {
-                    codePicker.getDialogEventsListener().onCcpDialogDismiss(dialogInterface);
-                }
+        dialog.setOnDismissListener(dialogInterface -> {
+            hideKeyboard(context);
+            if (codePicker.getDialogEventsListener() != null) {
+                codePicker.getDialogEventsListener().onCcpDialogDismiss(dialogInterface);
             }
         });
 
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                hideKeyboard(context);
-                if (codePicker.getDialogEventsListener() != null) {
-                    codePicker.getDialogEventsListener().onCcpDialogCancel(dialogInterface);
-                }
+        dialog.setOnCancelListener(dialogInterface -> {
+            hideKeyboard(context);
+            if (codePicker.getDialogEventsListener() != null) {
+                codePicker.getDialogEventsListener().onCcpDialogCancel(dialogInterface);
             }
         });
 
@@ -272,48 +299,11 @@ class CountryCodeDialog {
         }
     }
 
-    private static void hideKeyboard(Context context) {
-        if (context instanceof Activity) {
-            Activity activity = (Activity) context;
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-            //Find the currently focused view, so we can grab the correct window token from it.
-            View view = activity.getCurrentFocus();
-            //If no view currently has focus, create a new one, just so we can grab a window token from it
-            if (view == null) {
-                view = new View(activity);
-            }
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    static void setCursorColor(EditText editText, int color) {
-        if (sCursorDrawableField == null) {
-            return;
-        }
-        try {
-            final Drawable drawable = getDrawable(editText.getContext(),
-                    sCursorDrawableResourceField.getInt(editText));
-            drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-            sCursorDrawableField.set(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN
-                    ? editText : sEditorField.get(editText), new Drawable[]{drawable, drawable});
-        } catch (Exception ignored) {
-
-        }
-    }
-
-    static void clear() {
+    void clear() {
         if (dialog != null) {
             dialog.dismiss();
         }
         dialog = null;
         context = null;
-    }
-
-    private static Drawable getDrawable(Context context, int id) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return context.getResources().getDrawable(id);
-        } else {
-            return context.getDrawable(id);
-        }
     }
 }

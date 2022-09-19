@@ -1,14 +1,15 @@
 package com.futuremind.recyclerviewfastscroll.viewprovider;
 
 import android.graphics.drawable.InsetDrawable;
-import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import com.futuremind.recyclerviewfastscroll.Utils;
-import com.hbb20.R;
+import com.sunkengod.R;
 
 /**
  * Created by Michal on 05/08/16.
@@ -48,7 +49,7 @@ public class DefaultScrollerViewProvider extends ScrollerViewProvider {
 
     @Override
     public int getBubbleOffset() {
-        return (int) (getScroller().isVertical() ? ((float)handle.getHeight()/2f)-bubble.getHeight() : ((float)handle.getWidth()/2f)-bubble.getWidth());
+        return (int) (getScroller().isVertical() ? ((float) handle.getHeight() / 2f) - bubble.getHeight() : ((float) handle.getWidth() / 2f) - bubble.getWidth());
     }
 
     @Override

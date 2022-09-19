@@ -1,4 +1,4 @@
-package com.hbb20;
+package com.sunkengod;
 
 import android.content.Context;
 import android.util.Log;
@@ -22,36 +22,35 @@ import java.util.Locale;
  * Created by hbb20 on 11/1/16.
  */
 public class CCPCountry implements Comparable<CCPCountry> {
+    //countries with +1
+    private static final String ANTIGUA_AND_BARBUDA_AREA_CODES = "268";
+    private static final String ANGUILLA_AREA_CODES = "264";
+    private static final String BARBADOS_AREA_CODES = "246";
+    private static final String BERMUDA_AREA_CODES = "441";
+    private static final String BAHAMAS_AREA_CODES = "242";
+    private static final String CANADA_AREA_CODES = "204/226/236/249/250/289/306/343/365/403/416/418/431/437/438/450/506/514/519/579/581/587/600/604/613/639/647/705/709/769/778/780/782/807/819/825/867/873/902/905/";
+    private static final String DOMINICA_AREA_CODES = "767";
+    private static final String DOMINICAN_REPUBLIC_AREA_CODES = "809/829/849";
+    private static final String GRENADA_AREA_CODES = "473";
+    private static final String JAMAICA_AREA_CODES = "876";
+    private static final String SAINT_KITTS_AND_NEVIS_AREA_CODES = "869";
+    private static final String CAYMAN_ISLANDS_AREA_CODES = "345";
+    private static final String SAINT_LUCIA_AREA_CODES = "758";
+    private static final String MONTSERRAT_AREA_CODES = "664";
+    private static final String PUERTO_RICO_AREA_CODES = "787";
+    private static final String SINT_MAARTEN_AREA_CODES = "721";
+    private static final String TURKS_AND_CAICOS_ISLANDS_AREA_CODES = "649";
+    private static final String TRINIDAD_AND_TOBAGO_AREA_CODES = "868";
+    private static final String SAINT_VINCENT_AND_THE_GRENADINES_AREA_CODES = "784";
+    private static final String BRITISH_VIRGIN_ISLANDS_AREA_CODES = "284";
+    private static final String US_VIRGIN_ISLANDS_AREA_CODES = "340";
+    //countries with +44
+    private static final String ISLE_OF_MAN = "1624";
     static int DEFAULT_FLAG_RES = -99;
     static String TAG = "Class Country";
     static CountryCodePicker.Language loadedLibraryMasterListLanguage;
     static String dialogTitle, searchHintMessage, noResultFoundAckMessage;
     static List<CCPCountry> loadedLibraryMaterList;
-    //countries with +1
-    private static String ANTIGUA_AND_BARBUDA_AREA_CODES = "268";
-    private static String ANGUILLA_AREA_CODES = "264";
-    private static String BARBADOS_AREA_CODES = "246";
-    private static String BERMUDA_AREA_CODES = "441";
-    private static String BAHAMAS_AREA_CODES = "242";
-    private static String CANADA_AREA_CODES = "204/226/236/249/250/289/306/343/365/403/416/418/431/437/438/450/506/514/519/579/581/587/600/604/613/639/647/705/709/769/778/780/782/807/819/825/867/873/902/905/";
-    private static String DOMINICA_AREA_CODES = "767";
-    private static String DOMINICAN_REPUBLIC_AREA_CODES = "809/829/849";
-    private static String GRENADA_AREA_CODES = "473";
-    private static String JAMAICA_AREA_CODES = "876";
-    private static String SAINT_KITTS_AND_NEVIS_AREA_CODES = "869";
-    private static String CAYMAN_ISLANDS_AREA_CODES = "345";
-    private static String SAINT_LUCIA_AREA_CODES = "758";
-    private static String MONTSERRAT_AREA_CODES = "664";
-    private static String PUERTO_RICO_AREA_CODES = "787";
-    private static String SINT_MAARTEN_AREA_CODES = "721";
-    private static String TURKS_AND_CAICOS_ISLANDS_AREA_CODES = "649";
-    private static String TRINIDAD_AND_TOBAGO_AREA_CODES = "868";
-    private static String SAINT_VINCENT_AND_THE_GRENADINES_AREA_CODES = "784";
-    private static String BRITISH_VIRGIN_ISLANDS_AREA_CODES = "284";
-    private static String US_VIRGIN_ISLANDS_AREA_CODES = "340";
-
-    //countries with +44
-    private static String ISLE_OF_MAN = "1624";
     String nameCode;
     String phoneCode;
     String name, englishName;
@@ -88,7 +87,6 @@ public class CCPCountry implements Comparable<CCPCountry> {
      * This function parses the raw/countries.xml file, and get list of all the countries.
      *
      * @param context: required to access application resources (where country.xml is).
-     * @return List of all the countries available in xml file.
      */
     static void loadDataFromXML(Context context, CountryCodePicker.Language language) {
         List<CCPCountry> countries = new ArrayList<>();
@@ -107,19 +105,24 @@ public class CCPCountry implements Comparable<CCPCountry> {
                     case XmlPullParser.START_TAG:
                         break;
                     case XmlPullParser.END_TAG:
-                        if (name.equals("country")) {
-                            CCPCountry ccpCountry = new CCPCountry();
-                            ccpCountry.setNameCode(xmlPullParser.getAttributeValue(null, "name_code").toUpperCase(Locale.US));
-                            ccpCountry.setPhoneCode(xmlPullParser.getAttributeValue(null, "phone_code"));
-                            ccpCountry.setEnglishName(xmlPullParser.getAttributeValue(null, "english_name"));
-                            ccpCountry.setName(xmlPullParser.getAttributeValue(null, "name"));
-                            countries.add(ccpCountry);
-                        } else if (name.equals("ccp_dialog_title")) {
-                            tempDialogTitle = xmlPullParser.getAttributeValue(null, "translation");
-                        } else if (name.equals("ccp_dialog_search_hint_message")) {
-                            tempSearchHint = xmlPullParser.getAttributeValue(null, "translation");
-                        } else if (name.equals("ccp_dialog_no_result_ack_message")) {
-                            tempNoResultAck = xmlPullParser.getAttributeValue(null, "translation");
+                        switch (name) {
+                            case "country":
+                                CCPCountry ccpCountry = new CCPCountry();
+                                ccpCountry.setNameCode(xmlPullParser.getAttributeValue(null, "name_code").toUpperCase(Locale.US));
+                                ccpCountry.setPhoneCode(xmlPullParser.getAttributeValue(null, "phone_code"));
+                                ccpCountry.setEnglishName(xmlPullParser.getAttributeValue(null, "english_name"));
+                                ccpCountry.setName(xmlPullParser.getAttributeValue(null, "name"));
+                                countries.add(ccpCountry);
+                                break;
+                            case "ccp_dialog_title":
+                                tempDialogTitle = xmlPullParser.getAttributeValue(null, "translation");
+                                break;
+                            case "ccp_dialog_search_hint_message":
+                                tempSearchHint = xmlPullParser.getAttributeValue(null, "translation");
+                                break;
+                            case "ccp_dialog_no_result_ack_message":
+                                tempNoResultAck = xmlPullParser.getAttributeValue(null, "translation");
+                                break;
                         }
                         break;
                 }
@@ -132,8 +135,6 @@ public class CCPCountry implements Comparable<CCPCountry> {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-
         }
 
         //if anything went wrong, countries will be loaded for english language
@@ -187,7 +188,6 @@ public class CCPCountry implements Comparable<CCPCountry> {
     /**
      * Search a country which matches @param code.
      *
-     * @param context
      * @param preferredCountries is list of preference countries.
      * @param code               phone code. i.e "91" or "1"
      * @return Country that has phone code as @param code.
@@ -196,8 +196,8 @@ public class CCPCountry implements Comparable<CCPCountry> {
      */
     public static CCPCountry getCountryForCode(Context context, CountryCodePicker.Language language, List<CCPCountry> preferredCountries, String code) {
 
-        /**
-         * check in preferred countries
+        /*
+        check in preferred countries
          */
         if (preferredCountries != null && !preferredCountries.isEmpty()) {
             for (CCPCountry CCPCountry : preferredCountries) {
@@ -344,7 +344,7 @@ public class CCPCountry implements Comparable<CCPCountry> {
             } else {
                 firstDigit = 0;
             }
-            CCPCountry ccpCountry = null;
+            CCPCountry ccpCountry;
             for (int i = firstDigit; i <= fullNumber.length(); i++) {
                 String code = fullNumber.substring(firstDigit, i);
                 CCPCountryGroup countryGroup = null;
@@ -394,7 +394,6 @@ public class CCPCountry implements Comparable<CCPCountry> {
      * Returns image res based on country name code
      *
      * @param CCPCountry
-     * @return
      */
     static int getFlagMasterResID(CCPCountry CCPCountry) {
         switch (CCPCountry.getNameCode().toLowerCase()) {

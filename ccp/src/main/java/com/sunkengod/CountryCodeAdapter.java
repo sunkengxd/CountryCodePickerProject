@@ -1,11 +1,10 @@
-package com.hbb20;
+package com.sunkengod;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
@@ -29,7 +29,7 @@ import java.util.Locale;
  * Created by hbb20 on 11/1/16.
  */
 class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.CountryCodeViewHolder> implements SectionTitleProvider {
-    List<CCPCountry> filteredCountries = null, masterCountries = null;
+    List<CCPCountry> filteredCountries, masterCountries;
     TextView textView_noResult;
     CountryCodePicker codePicker;
     LayoutInflater inflater;
@@ -65,12 +65,7 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
     }
 
     private void setQueryClearListener() {
-        imgClearQuery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editText_search.setText("");
-            }
-        });
+        imgClearQuery.setOnClickListener(v -> editText_search.setText(""));
     }
 
     /**
@@ -99,17 +94,14 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
                 }
             });
 
-            this.editText_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        InputMethodManager in = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        in.hideSoftInputFromWindow(editText_search.getWindowToken(), 0);
-                        return true;
-                    }
-
-                    return false;
+            this.editText_search.setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    InputMethodManager in = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    in.hideSoftInputFromWindow(editText_search.getWindowToken(), 0);
+                    return true;
                 }
+
+                return false;
             });
         }
     }
@@ -140,7 +132,7 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
     }
 
     private List<CCPCountry> getFilteredCountries(String query) {
-        List<CCPCountry> tempCCPCountryList = new ArrayList<CCPCountry>();
+        List<CCPCountry> tempCCPCountryList = new ArrayList<>();
         preferredCountriesCount = 0;
         if (codePicker.preferredCountries != null && codePicker.preferredCountries.size() > 0) {
             for (CCPCountry CCPCountry : codePicker.preferredCountries) {
@@ -151,8 +143,7 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
             }
 
             if (tempCCPCountryList.size() > 0) { //means at least one preferred country is added.
-                CCPCountry divider = null;
-                tempCCPCountryList.add(divider);
+                tempCCPCountryList.add(null);
                 preferredCountriesCount++;
             }
         }
@@ -165,11 +156,11 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
         return tempCCPCountryList;
     }
 
+    @NonNull
     @Override
-    public CountryCodeViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public CountryCodeViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View rootView = inflater.inflate(R.layout.layout_recycler_country_tile, viewGroup, false);
-        CountryCodeViewHolder viewHolder = new CountryCodeViewHolder(rootView);
-        return viewHolder;
+        return new CountryCodeViewHolder(rootView);
     }
 
     @Override
@@ -210,7 +201,7 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
     }
 
     class CountryCodeViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout relativeLayout_main,rootRowCountryTile;
+        LinearLayout relativeLayout_main;
         TextView textView_name, textView_code;
         ImageView imageViewFlag;
         LinearLayout linearFlagHolder;
@@ -220,10 +211,10 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
             super(itemView);
             relativeLayout_main = (LinearLayout) itemView;
 
-            textView_name = (TextView) relativeLayout_main.findViewById(R.id.textView_countryName);
-            textView_code = (TextView) relativeLayout_main.findViewById(R.id.textView_code);
-            imageViewFlag = (ImageView) relativeLayout_main.findViewById(R.id.image_flag);
-            linearFlagHolder = (LinearLayout) relativeLayout_main.findViewById(R.id.linear_flag_holder);
+            textView_name = relativeLayout_main.findViewById(R.id.textView_countryName);
+            textView_code = relativeLayout_main.findViewById(R.id.textView_code);
+            imageViewFlag = relativeLayout_main.findViewById(R.id.image_flag);
+            linearFlagHolder = relativeLayout_main.findViewById(R.id.linear_flag_holder);
             divider = relativeLayout_main.findViewById(R.id.preferenceDivider);
 
             if (codePicker.getDialogTextColor() != 0) {
@@ -232,10 +223,10 @@ class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.Country
                 divider.setBackgroundColor(codePicker.getDialogTextColor());
             }
 
-            if(codePicker.getCcpDialogRippleEnable()){
+            if (codePicker.getCcpDialogRippleEnable()) {
                 TypedValue outValue = new TypedValue();
                 context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
-                if(outValue.resourceId!=0)
+                if (outValue.resourceId != 0)
                     relativeLayout_main.setBackgroundResource(outValue.resourceId);
                 else
                     relativeLayout_main.setBackgroundResource(outValue.data);

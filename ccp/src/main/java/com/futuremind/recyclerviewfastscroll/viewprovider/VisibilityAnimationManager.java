@@ -7,8 +7,7 @@ import android.animation.AnimatorSet;
 import androidx.annotation.AnimatorRes;
 import android.view.View;
 
-import com.hbb20.R;
-
+import com.sunkengod.R;
 
 /**
  * Created by Michal on 05/08/16.
@@ -22,8 +21,8 @@ public class VisibilityAnimationManager {
     protected AnimatorSet hideAnimator;
     protected AnimatorSet showAnimator;
 
-    private float pivotXRelative;
-    private float pivotYRelative;
+    private final float pivotXRelative;
+    private final float pivotYRelative;
 
     protected VisibilityAnimationManager(final View view, @AnimatorRes int showAnimator, @AnimatorRes int hideAnimator, float pivotXRelative, float pivotYRelative, int hideDelay){
         this.view = view;

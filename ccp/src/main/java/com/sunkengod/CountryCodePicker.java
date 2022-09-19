@@ -1,4 +1,4 @@
-package com.hbb20;
+package com.sunkengod;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -46,12 +46,10 @@ import io.michaelrocks.libphonenumber.android.Phonenumber;
 public class CountryCodePicker extends RelativeLayout {
 
     static final int DEFAULT_UNSET = -99;
+    private static final int TEXT_GRAVITY_CENTER = 0;
     static String TAG = "CCP";
     static String BUNDLE_SELECTED_CODE = "selectedCode";
     static int LIB_DEFAULT_COUNTRY_CODE = 91;
-    private static int TEXT_GRAVITY_LEFT = -1, TEXT_GRAVITY_RIGHT = 1, TEXT_GRAVITY_CENTER = 0;
-    private static String ANDROID_NAME_SPACE = "http://schemas.android.com/apk/res/android";
-    private CCPTalkBackTextProvider talkBackTextProvider = new InternalTalkBackTextProvider();
     String CCP_PREF_FILE = "CCP_PREF_FILE";
     int defaultCountryCode;
     String defaultCountryNameCode;
@@ -112,7 +110,6 @@ public class CountryCodePicker extends RelativeLayout {
     String customMasterCountriesParam, excludedCountriesParam;
     Language customDefaultLanguage = Language.ENGLISH;
     Language languageToApply = Language.ENGLISH;
-
     boolean dialogKeyboardAutoPopup = true;
     boolean ccpClickable = true;
     boolean autoDetectLanguageEnabled = false, autoDetectCountryEnabled = false, numberAutoFormattingEnabled = true, hintExampleNumberEnabled = false;
@@ -125,6 +122,8 @@ public class CountryCodePicker extends RelativeLayout {
     String lastCheckedAreaCode = null;
     int lastCursorPosition = 0;
     boolean countryChangedDueToAreaCode = false;
+    private final CountryCodeDialog dialog = new CountryCodeDialog();
+    private CCPTalkBackTextProvider talkBackTextProvider = new InternalTalkBackTextProvider();
     private OnCountryChangeListener onCountryChangeListener;
     private PhoneNumberValidityChangeListener phoneNumberValidityChangeListener;
     private FailureListener failureListener;
@@ -177,8 +176,6 @@ public class CountryCodePicker extends RelativeLayout {
 
     /**
      * This will set boolean for numberAutoFormattingEnabled and refresh formattingTextWatcher
-     *
-     * @param numberAutoFormattingEnabled
      */
     public void setNumberAutoFormattingEnabled(boolean numberAutoFormattingEnabled) {
         this.numberAutoFormattingEnabled = numberAutoFormattingEnabled;
@@ -207,23 +204,24 @@ public class CountryCodePicker extends RelativeLayout {
         mInflater = LayoutInflater.from(context);
 
         if (attrs != null) {
+            String ANDROID_NAME_SPACE = "http://schemas.android.com/apk/res/android";
             xmlWidth = attrs.getAttributeValue(ANDROID_NAME_SPACE, "layout_width");
         }
         removeAllViewsInLayout();
         //at run time, match parent value returns LayoutParams.MATCH_PARENT ("-1"), for some android xml preview it returns "fill_parent"
-        if (attrs != null && xmlWidth != null && (xmlWidth.equals(LayoutParams.MATCH_PARENT + "") || xmlWidth.equals(LayoutParams.FILL_PARENT + "") || xmlWidth.equals("fill_parent") || xmlWidth.equals("match_parent"))) {
+        if (attrs != null && xmlWidth != null && (xmlWidth.equals(LayoutParams.MATCH_PARENT + "") || xmlWidth.equals("fill_parent") || xmlWidth.equals("match_parent"))) {
             holderView = mInflater.inflate(R.layout.layout_full_width_code_picker, this, true);
         } else {
             holderView = mInflater.inflate(R.layout.layout_code_picker, this, true);
         }
 
-        textView_selectedCountry = (TextView) holderView.findViewById(R.id.textView_selectedCountry);
-        holder = (RelativeLayout) holderView.findViewById(R.id.countryCodeHolder);
-        imageViewArrow = (ImageView) holderView.findViewById(R.id.imageView_arrow);
-        imageViewFlag = (ImageView) holderView.findViewById(R.id.image_flag);
-        linearFlagHolder = (LinearLayout) holderView.findViewById(R.id.linear_flag_holder);
-        linearFlagBorder = (LinearLayout) holderView.findViewById(R.id.linear_flag_border);
-        relativeClickConsumer = (RelativeLayout) holderView.findViewById(R.id.rlClickConsumer);
+        textView_selectedCountry = holderView.findViewById(R.id.textView_selectedCountry);
+        holder = holderView.findViewById(R.id.countryCodeHolder);
+        imageViewArrow = holderView.findViewById(R.id.imageView_arrow);
+        imageViewFlag = holderView.findViewById(R.id.image_flag);
+        linearFlagHolder = holderView.findViewById(R.id.linear_flag_holder);
+        linearFlagBorder = holderView.findViewById(R.id.linear_flag_border);
+        relativeClickConsumer = holderView.findViewById(R.id.rlClickConsumer);
         codePicker = this;
         if (attrs != null) {
             applyCustomProperty(attrs);
@@ -395,7 +393,7 @@ public class CountryCodePicker extends RelativeLayout {
             if (!setUsingNameCode && defaultCountryCode != -1) {
                 if (!isInEditMode()) {
                     //if invalid country is set using xml, it will be replaced with LIB_DEFAULT_COUNTRY_CODE
-                    if (defaultCountryCode != -1 && CCPCountry.getCountryForCode(getContext(), getLanguageToApply(), preferredCountries, defaultCountryCode) == null) {
+                    if (CCPCountry.getCountryForCode(getContext(), getLanguageToApply(), preferredCountries, defaultCountryCode) == null) {
                         defaultCountryCode = LIB_DEFAULT_COUNTRY_CODE;
                     }
                     setDefaultCountryUsingPhoneCode(defaultCountryCode);
@@ -507,7 +505,7 @@ public class CountryCodePicker extends RelativeLayout {
         if (rippleEnable) {
             TypedValue outValue = new TypedValue();
             getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
-            if(outValue.resourceId!=0)
+            if (outValue.resourceId != 0)
                 relativeClickConsumer.setBackgroundResource(outValue.resourceId);
             else
                 relativeClickConsumer.setBackgroundResource(outValue.data);
@@ -575,8 +573,6 @@ public class CountryCodePicker extends RelativeLayout {
 
     /**
      * To show/hide name code from country selection dialog
-     *
-     * @param ccpDialogShowNameCode
      */
     public void setCcpDialogShowNameCode(boolean ccpDialogShowNameCode) {
         this.ccpDialogShowNameCode = ccpDialogShowNameCode;
@@ -607,8 +603,6 @@ public class CountryCodePicker extends RelativeLayout {
 
     /**
      * To show/hide flag from country selection dialog
-     *
-     * @param ccpDialogShowFlag
      */
     public void setCcpDialogShowFlag(boolean ccpDialogShowFlag) {
         this.ccpDialogShowFlag = ccpDialogShowFlag;
@@ -1794,7 +1788,7 @@ public class CountryCodePicker extends RelativeLayout {
         CCPCountry ccpCountry = CCPCountry.getCountryForCode(getContext(), getLanguageToApply(), preferredCountries, countryCode); //xml stores data in string format, but want to allow only numeric value to country code to user.
         if (ccpCountry == null) {
             if (defaultCCPCountry == null) {
-                defaultCCPCountry = ccpCountry.getCountryForCode(getContext(), getLanguageToApply(), preferredCountries, defaultCountryCode);
+                defaultCCPCountry = CCPCountry.getCountryForCode(getContext(), getLanguageToApply(), preferredCountries, defaultCountryCode);
             }
             setSelectedCountry(defaultCCPCountry);
         } else {
@@ -1813,7 +1807,7 @@ public class CountryCodePicker extends RelativeLayout {
         CCPCountry country = CCPCountry.getCountryForNameCodeFromLibraryMasterList(getContext(), getLanguageToApply(), countryNameCode); //xml stores data in string format, but want to allow only numeric value to country code to user.
         if (country == null) {
             if (defaultCCPCountry == null) {
-                defaultCCPCountry = country.getCountryForCode(getContext(), getLanguageToApply(), preferredCountries, defaultCountryCode);
+                defaultCCPCountry = CCPCountry.getCountryForCode(getContext(), getLanguageToApply(), preferredCountries, defaultCountryCode);
             }
             setSelectedCountry(defaultCCPCountry);
         } else {
@@ -2204,7 +2198,7 @@ public class CountryCodePicker extends RelativeLayout {
      * scroll position to specified country.
      */
     public void launchCountrySelectionDialog(final String countryNameCode) {
-        CountryCodeDialog.openCountryCodeDialog(codePicker, countryNameCode);
+        dialog.openCountryCodeDialog(codePicker, countryNameCode);
     }
 
     /**
@@ -2440,7 +2434,7 @@ public class CountryCodePicker extends RelativeLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-        CountryCodeDialog.clear();
+        dialog.clear();
         super.onDetachedFromWindow();
     }
 

@@ -1,4 +1,4 @@
-package com.hbb20.countrycodepickerlib;
+package com.sunkengod.countrycodepickerlib;
 
 import org.junit.Test;
 

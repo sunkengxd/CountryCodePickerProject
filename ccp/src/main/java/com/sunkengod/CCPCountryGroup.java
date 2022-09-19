@@ -1,4 +1,4 @@
-package com.hbb20;
+package com.sunkengod;
 
 import android.content.Context;
 import android.util.SparseArray;
@@ -11,9 +11,9 @@ import java.util.Map;
  */
 public class CCPCountryGroup {
     private static SparseArray<CCPCountryGroup> countryGroups = null;
+    private final HashMap<String, String> nameCodeToAreaCodesMap;
     String defaultNameCode;
     int areaCodeLength;
-    private HashMap<String, String> nameCodeToAreaCodesMap;
 
     private CCPCountryGroup(String defaultNameCode, int areaCodeLength, HashMap<String, String> nameCodeToAreaCodesMap) {
         this.defaultNameCode = defaultNameCode;
@@ -95,8 +95,6 @@ public class CCPCountryGroup {
     /**
      * Go though nameCodeToAreaCodesMap entries to find name code of country.
      *
-     * @param context
-     * @param language
      * @param areaCode for which we are looking for country
      * @return country that matches areaCode. If no country matched, returns default country.
      */

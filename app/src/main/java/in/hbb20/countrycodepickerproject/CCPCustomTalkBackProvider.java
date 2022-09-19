@@ -1,7 +1,7 @@
 package in.hbb20.countrycodepickerproject;
 
-import com.hbb20.CCPCountry;
-import com.hbb20.CCPTalkBackTextProvider;
+import com.sunkengod.CCPCountry;
+import com.sunkengod.CCPTalkBackTextProvider;
 
 class CCPCustomTalkBackProvider implements CCPTalkBackTextProvider {
     @Override

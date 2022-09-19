@@ -1,4 +1,4 @@
-package com.hbb20;
+package com.sunkengod;
 
 import android.content.Context;
 import android.telephony.PhoneNumberUtils;
@@ -14,8 +14,8 @@ import io.michaelrocks.libphonenumber.android.PhoneNumberUtil;
 //Reference https://stackoverflow.com/questions/32661363/using-phonenumberformattingtextwatcher-without-typing-country-calling-code to solve formatting issue
 public class InternationalPhoneTextWatcher implements TextWatcher {
 
-    private static final String TAG = "Int'l Phone TextWatcher";
     PhoneNumberUtil phoneNumberUtil;
+    Editable lastFormatted = null;
     /**
      * Indicates the change was caused by ourselves.
      */
@@ -25,15 +25,13 @@ public class InternationalPhoneTextWatcher implements TextWatcher {
      */
     private boolean mStopFormatting;
     private AsYouTypeFormatter mFormatter;
-    private String countryNameCode;
-    Editable lastFormatted = null;
     private int countryPhoneCode;
 
     //when country is changed, we update the number.
     //at this point this will avoid "stopFormatting"
     private boolean needUpdateForCountryChange = false;
 
-    private boolean internationalOnly;
+    private final boolean internationalOnly;
 
     /**
      * @param context
@@ -62,13 +60,12 @@ public class InternationalPhoneTextWatcher implements TextWatcher {
     }
 
     public void updateCountry(String countryNameCode, int countryPhoneCode) {
-        this.countryNameCode = countryNameCode;
         this.countryPhoneCode = countryPhoneCode;
         mFormatter = phoneNumberUtil.getAsYouTypeFormatter(countryNameCode);
         mFormatter.clear();
         if (lastFormatted != null) {
             needUpdateForCountryChange = true;
-            String onlyDigits = phoneNumberUtil.normalizeDigitsOnly(lastFormatted);
+            String onlyDigits = PhoneNumberUtil.normalizeDigitsOnly(lastFormatted);
             lastFormatted.replace(0, lastFormatted.length(), onlyDigits, 0, onlyDigits.length());
             needUpdateForCountryChange = false;
         }
@@ -160,13 +157,11 @@ public class InternationalPhoneTextWatcher implements TextWatcher {
 
         //Now we have everything calculated, set this values in
         try {
-            if (formatted != null) {
-                mSelfChange = true;
-                s.replace(0, s.length(), formatted, 0, formatted.length());
-                mSelfChange = false;
-                lastFormatted = s;
-                Selection.setSelection(s, finalCursorPosition);
-            }
+            mSelfChange = true;
+            s.replace(0, s.length(), formatted, 0, formatted.length());
+            mSelfChange = false;
+            lastFormatted = s;
+            Selection.setSelection(s, finalCursorPosition);
         } catch (Exception e) {
             e.printStackTrace();
         }
