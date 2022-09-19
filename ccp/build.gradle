@@ -14,7 +14,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'com.hbb20'
+    namespace 'com.sunkengod'
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
     }

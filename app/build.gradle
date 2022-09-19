@@ -5,11 +5,11 @@ android {
     compileSdkVersion 32
 
     defaultConfig {
-        applicationId "in.hbb20.countrycodepickerproject"
+        applicationId "com.sunkengod.ccp"
         minSdkVersion 16
         targetSdkVersion 32
         versionCode 7
-        versionName "2.2.4"
+        versionName "1.0.0"
     }
     buildTypes {
         release {
@@ -23,7 +23,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'in.hbb20.countrycodepickerproject'
+    namespace 'com.sunkengod.ccp'
 }
 
 dependencies {
