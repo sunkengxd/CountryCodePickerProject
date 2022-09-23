@@ -85,7 +85,7 @@ public class CountryCodePicker extends RelativeLayout {
     boolean ccpDialogRippleEnable = true;
     boolean searchAllowed = true;
     boolean showArrow = true;
-    boolean showCloseIcon = false;
+    boolean showCloseIcon = true;
     boolean rememberLastSelection = false;
     boolean detectCountryWithAreaCode = true;
     boolean ccpDialogShowNameCode = true;
@@ -323,7 +323,7 @@ public class CountryCodePicker extends RelativeLayout {
             refreshArrowViewVisibility();
 
             //show close icon
-            showCloseIcon = a.getBoolean(R.styleable.CountryCodePicker_ccpDialog_showCloseIcon, false);
+            showCloseIcon = a.getBoolean(R.styleable.CountryCodePicker_ccpDialog_showCloseIcon, true);
 
             //ripple enable
             rippleEnable = a.getBoolean(R.styleable.CountryCodePicker_ccp_rippleEnable, true);
