@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.sunkengod.ccp"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 32
         versionCode 7
         versionName "1.0.0"
