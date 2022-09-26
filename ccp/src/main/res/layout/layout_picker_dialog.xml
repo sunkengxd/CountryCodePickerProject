@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardViewRoot"
+    android:background="@drawable/background_round_bordered_line"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -33,6 +34,8 @@
                 android:id="@+id/img_dismiss"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
+                android:elevation="20dp"
+                android:outlineProvider="none"
                 android:clickable="true"
                 android:contentDescription="@string/dismiss_button_content_description"
                 android:focusable="true"
