@@ -396,7 +396,8 @@ public class CountryCodePicker extends RelativeLayout {
                     if (CCPCountry.getCountryForCode(getContext(), getLanguageToApply(), preferredCountries, defaultCountryCode) == null) {
                         defaultCountryCode = LIB_DEFAULT_COUNTRY_CODE;
                     }
-                    setDefaultCountryUsingPhoneCode(defaultCountryCode);
+                    setDefaultCountryUsingNameCode(a.getString(R.styleable.CountryCodePicker_ccp_defaultNameCode));
+//                    setDefaultCountryUsingPhoneCode(defaultCountryCode);
                     setSelectedCountry(defaultCCPCountry);
                 } else {
                     //when it is in edit mode, we will check in english list only.
