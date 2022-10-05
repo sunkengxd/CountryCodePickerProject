@@ -9,8 +9,7 @@
     <RelativeLayout
         android:id="@+id/rlClickConsumer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/ccp_padding">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/linear_flag_holder"
