@@ -143,8 +143,8 @@ public class CCPCountry implements Comparable<CCPCountry> {
             countries = getLibraryMasterCountriesEnglish();
         }
 
-        dialogTitle = tempDialogTitle.length() > 0 ? tempDialogTitle : "Please Select a Country";
-        searchHintMessage = tempSearchHint.length() > 0 ? tempSearchHint : "Search";
+        dialogTitle = tempDialogTitle.length() > 0 ? tempDialogTitle : "Country";
+        searchHintMessage = tempSearchHint.length() > 0 ? tempSearchHint : "Search for a Country";
         noResultFoundAckMessage = tempNoResultAck.length() > 0 ? tempNoResultAck : "Results not found";
         loadedLibraryMaterList = countries;
 
