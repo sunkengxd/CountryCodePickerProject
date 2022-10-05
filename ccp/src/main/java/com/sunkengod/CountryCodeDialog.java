@@ -1,7 +1,6 @@
 package com.sunkengod;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -9,8 +8,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -20,12 +17,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.futuremind.recyclerviewfastscroll.FastScroller;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -38,7 +35,7 @@ class CountryCodeDialog {
             sEditorField,
             sCursorDrawableField,
             sCursorDrawableResourceField;
-    static Dialog dialog;
+    private BottomSheetDialog dialog;
 
     static {
         Field editorField = null;
@@ -99,24 +96,29 @@ class CountryCodeDialog {
     }
 
     private static Drawable getDrawable(Context context, int id) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return context.getResources().getDrawable(id);
-        } else {
-            return AppCompatResources.getDrawable(context, id);
-        }
+        return AppCompatResources.getDrawable(context, id);
     }
 
     public void
     openCountryCodeDialog(final CountryCodePicker codePicker, final String countryNameCode) {
         context = codePicker.getContext();
-        dialog = new Dialog(context);
+//        dialog = new Dialog(context);
         codePicker.refreshCustomMasterList();
         codePicker.refreshPreferredCountries();
         List<CCPCountry> masterCountries = CCPCountry.getCustomMasterCountryList(context, codePicker);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setContentView(R.layout.layout_picker_dialog);
-        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, android.R.color.transparent));
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.getWindow().setContentView(R.layout.layout_picker_dialog);
+//        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, android.R.color.transparent));
+//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        View view = View.inflate(context, R.layout.layout_picker_dialog, null);
+        BottomSheetDialog dialog = new BottomSheetDialog(context);
+        dialog.setContentView(view);
+
+        View bottomSheet = (View) view.getParent();
+        bottomSheet.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
+        bottomSheet.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+        bottomSheet.setBackgroundColor(Color.TRANSPARENT);
 
         //dialog views
         RecyclerView recyclerView_countryDialog = dialog.findViewById(R.id.recycler_countryDialog);
@@ -167,7 +169,7 @@ class CountryCodeDialog {
         //close button visibility
         if (codePicker.isShowCloseIcon()) {
             imgDismiss.setVisibility(View.VISIBLE);
-            imgDismiss.setOnClickListener(view -> dialog.dismiss());
+            imgDismiss.setOnClickListener(view1 -> dialog.dismiss());
         } else {
             imgDismiss.setVisibility(View.GONE);
         }
